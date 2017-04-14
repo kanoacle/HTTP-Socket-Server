@@ -11,41 +11,38 @@ const server = net.createServer(request => {
 
     console.log(`method, path, http version: `, method, path, httpVersion);
 
-    if (requestLine[1] === '/') {
-      const headersAndBody = `HTTP/1.1 200 OK
+      let headersAndBody = `HTTP/1.1 200 OK
       Content-Type: text/html
       Content-Length: ${indexHTML.length}
 
       ${indexHTML}`;
-
-      request.write(headersAndBody);
-      request.end();
-    } else if (requestLine[1] === '/hydrogen' || requestLine[1] === '/hydrogen.html') {
-      const headersAndBody = `HTTP/1.1 200 OK
+    if (path === '/hydrogen' || path === '/hydrogen.html') {
+      headersAndBody = `HTTP/1.1 200 OK
       Content-Type: text/html
       Content-Length: ${hydrogenHTML.length}
 
       ${hydrogenHTML}`;
-
-      request.write(headersAndBody);
-      request.end();
-    } else if (requestLine[1] === '/helium' || requestLine[1] === '/helium.html') {
-      const headersAndBody = `HTTP/1.1 200 OK
+    } else if (path === '/helium' || path === '/helium.html') {
+      headersAndBody = `HTTP/1.1 200 OK
       Content-Type: text/html
       Content-Length: ${heliumHTML.length}
 
       ${heliumHTML}`;
+    } else if (path === '/css/styles.css') {
+      headersAndBody = `HTTP/1.1 200 OK
+      Content-Type: text/css
+      Content-Length: ${styleCSS.length}
 
-      request.write(headersAndBody);
-      request.end();
-    } else if (requestLine[1] !== '/' || requestLine[1] !== '/hydrogen') {
-      const headersAndBody = `I'm sorry, but that isn't an element on my list.
+      ${styleCSS}`;
+    } else if (path !== '/' && path !== '/index.html' && path !== '/index') {
+      headersAndBody = `HTTP/1.1 200 OK
+      Content-Type: text/html
+      Content-Length: ${errHTML.length}
 
       ${errHTML}`;
-
-      request.write(headersAndBody);
-      request.end();
     }
+    request.write(headersAndBody);
+    request.end();
   });
 });
 
